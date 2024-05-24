@@ -1,4 +1,4 @@
-module gen
+module github.com/o24o/mongen-v2
 
 go 1.22.2
 
