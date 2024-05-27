@@ -100,6 +100,16 @@ func (q *Q[T]) InsertOne(document *T) (*mongo.InsertOneResult, error) {
 	return insertResult, err
 }
 
+// InsertMany 插入多个新文档
+func (q *Q[T]) InsertMany(documents []*T) (*mongo.InsertManyResult, error) {
+	var docs []interface{}
+	for _, doc := range documents {
+		docs = append(docs, doc)
+	}
+	insertResult, err := q.collection.InsertMany(q.ctx, docs)
+	return insertResult, err
+}
+
 // UpsertOne 插入一个新文档或更新现有文档
 func (q *Q[T]) UpsertOne(document *T, uniqueFields []string) (*mongo.UpdateResult, error) {
 	// 构建过滤条件
@@ -135,14 +145,4 @@ func (q *Q[T]) UpsertOne(document *T, uniqueFields []string) (*mongo.UpdateResul
 	updateOptions := options.Update().SetUpsert(true)
 	updateResult, err := q.collection.UpdateOne(q.ctx, filter, updateBson, updateOptions)
 	return updateResult, err
-}
-
-// InsertMany 插入多个新文档
-func (q *Q[T]) InsertMany(documents []*T) (*mongo.InsertManyResult, error) {
-	var docs []interface{}
-	for _, doc := range documents {
-		docs = append(docs, doc)
-	}
-	insertResult, err := q.collection.InsertMany(q.ctx, docs)
-	return insertResult, err
 }
